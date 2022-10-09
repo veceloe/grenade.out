@@ -1,9 +1,9 @@
-const APP_CONFIG = {width: 1920, height: 1080, transparent: true, resolution: window.devicePixelRatio || 1};
+const APP_CONFIG = {width: window.innerWidth, height: window.innerHeight, transparent: true, resolution: window.devicePixelRatio || 1};
 const MAP = {
     barrels:[
-        {x: Math.random() * 1920, y: Math.random() * 1080, width: 100, height: 145},
-        {x: Math.random() * 1920, y: Math.random() * 1080, width: 100, height: 145},
-        {x: Math.random() * 1920, y: Math.random() * 1080, width: 100, height: 145}]
+        {x: Math.random() * (window.innerWidth-100) + 100,  y: Math.random() * (window.innerHeight-145) + 145, width: 100, height: 145},
+        {x: Math.random() * (window.innerWidth-100) + 100, y: Math.random() * (window.innerHeight-145) + 145, width: 100, height: 145},
+        {x: Math.random() * (window.innerWidth-100) + 100, y: Math.random() * (window.innerHeight-145) + 145, width: 100, height: 145}]
 };
 
 let barrels = [];
@@ -42,15 +42,15 @@ window.addEventListener("load", function () {
         return barrel;
     });
     const exp = new PIXI.Graphics();
-    exp.lineStyle(0); // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
+    exp.lineStyle(0);
     exp.beginFill(0xFFA500, 1);
     exp.drawCircle(0, 0, 10);
     exp.endFill();
     exp.restart = () => {
-            grenade.scale.x = 1.00;
-            grenade.scale.y = 1.00;
-            grenade.x = -100;
-            grenade.y = -100;
+            exp.scale.x = 0.2;
+            exp.scale.y = 0.2;
+            exp.x = -1000;
+            exp.y = -1000;
         };
     let tPower = new PIXI.Text("", {stroke: 0xff2200});
     let tAngle = new PIXI.Text("", {stroke: 0xff2200});
@@ -118,14 +118,15 @@ window.addEventListener("load", function () {
                  grenade.x += 0.1 * grenade.power;
                  grenade.rotation += 0.004 * grenade.power;
             }
-             if (Date.now() - grenade.moveTime > 3000) grenade.restart();
+             if (Date.now() - grenade.moveTime > 1000) grenade.restart();
+             if (grenade.x > window.innerWidth || grenade.x < 0 || grenade.y > window.innerHeight || grenade.y < 0) grenade.restart();
         }
 
                if (grenade.expTime) {
                   exp.scale.x *= 1.05;
                   exp.scale.y *= 1.05;
-                  if (Date.now() - grenade.expTime > 750) {
-                   exp.restart;
+                  if (Date.now() - grenade.expTime > 500) {
+                   exp.restart();
                    grenade.restart();
                    }
                 }
